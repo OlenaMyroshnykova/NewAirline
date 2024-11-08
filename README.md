@@ -1,7 +1,7 @@
 # List
-'''mermaide
+```mermaid
 classDiagram
-    class WeekDaysManager {
+    class HandlerWeekDays {
         - List~String~ days
         + WeekDaysManager()
         + List~String~ getDays()
@@ -12,4 +12,4 @@ classDiagram
         + void sortDaysAlphabetically()
         + void clearDays()
     }
-'''
+```
