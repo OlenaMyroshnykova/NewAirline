@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.flight.airline.flight.Flight;
 import com.flight.airline.user.User;
 
 @Entity
@@ -26,7 +27,10 @@ public class Booking {
     @JsonIgnoreProperties({"password", "authorities", "roles", "accountNonLocked", "accountNonExpired", "credentialsNonExpired", "enabled"})
     private User user;
 
-    private String flightNumber;
+    @ManyToOne
+    @JoinColumn(name = "flight_id", nullable = false)
+    private Flight flight;
+    
     private LocalDateTime bookingTime;
 }
 
