@@ -1,4 +1,4 @@
-package com.flight.airline.boocking;
+package com.flight.airline.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

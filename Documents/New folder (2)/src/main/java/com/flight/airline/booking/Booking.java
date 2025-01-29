@@ -1,4 +1,4 @@
-package com.flight.airline.boocking;
+package com.flight.airline.booking;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
     private Flight flight;
-    
+
     private LocalDateTime bookingTime;
 }
 

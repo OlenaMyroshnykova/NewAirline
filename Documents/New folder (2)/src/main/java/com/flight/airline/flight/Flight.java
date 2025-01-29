@@ -29,5 +29,13 @@ public class Flight {
 
     @Column(nullable = false)
     private LocalDateTime departureTime;
+
+    public Flight(String flightNumber, String origin, String destination, LocalDateTime departureTime) {
+        this.flightNumber = flightNumber;
+        this.origin = origin;
+        this.destination = destination;
+        this.departureTime = departureTime;
+    }
 }
+
 
