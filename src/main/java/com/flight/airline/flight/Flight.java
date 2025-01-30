@@ -11,6 +11,7 @@ import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.flight.airline.airport.Airport;
 import com.flight.airline.booking.Booking;
 
@@ -44,6 +45,9 @@ public class Flight {
     @Column(nullable = false)
     private int availableSeats;
 
+    @Column(nullable = false)
+    private boolean available = true;
+
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings;
 
@@ -54,6 +58,10 @@ public class Flight {
         this.destinationAirport = destinationAirport;
         this.departureTime = departureTime;
         this.availableSeats = availableSeats;
+    }
+
+    public void updateAvailability() {
+        this.available = availableSeats > 0 && departureTime.isAfter(LocalDateTime.now());
     }
 }
 

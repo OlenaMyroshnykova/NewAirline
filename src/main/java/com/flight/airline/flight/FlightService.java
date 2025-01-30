@@ -1,5 +1,6 @@
 package com.flight.airline.flight;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,7 @@ public class FlightService {
         flight.setOriginAirport(originAirport);
         flight.setDestinationAirport(destinationAirport);
         flight.setDepartureTime(departureTime);
-        flight.setAvailableSeats(availableSeats);  // <-- Добавили
+        flight.setAvailableSeats(availableSeats);
 
         return flightRepository.save(flight);
     }
@@ -63,7 +64,7 @@ public class FlightService {
                 flight.setOriginAirport(originAirport);
                 flight.setDestinationAirport(destinationAirport);
                 flight.setDepartureTime(departureTime);
-                flight.setAvailableSeats(availableSeats);  // <-- Добавили
+                flight.setAvailableSeats(availableSeats);
 
                 return flightRepository.save(flight);
             })
@@ -77,6 +78,24 @@ public class FlightService {
         
         flightRepository.delete(flight);
         return flight;
-    }}
+    }
+
+    @Transactional
+    public void checkAndUpdateFlightsAvailability() {
+        List<Flight> flights = flightRepository.findAll();
+        flights.forEach(flight -> {
+            boolean previousAvailability = flight.isAvailable();
+            flight.updateAvailability();
+            if (flight.isAvailable() != previousAvailability) {
+                flightRepository.save(flight);
+            }
+        });
+    }
+
+    @Scheduled(fixedRate = 300000)
+    public void scheduledAvailabilityCheck() {
+        checkAndUpdateFlightsAvailability();
+    }
+}
 
 

@@ -11,7 +11,6 @@ import com.flight.airline.user.User;
 import com.flight.airline.user.UserRepository;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -29,29 +28,27 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> registerUser(@RequestParam String username, @RequestParam String password, @RequestParam String role) {
+    public ResponseEntity<Map<String, Object>> registerUser(@RequestParam String username, @RequestParam String password) {
         if (userRepository.findByUsername(username).isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "User already exists."));
         }
 
-        Optional<Role> userRole = roleRepository.findByName(role);
-        if (userRole.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid role."));
-        }
+        // Назначаем роль USER по умолчанию
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("ROLE_USER not found in database"));
 
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setRoles(Set.of(userRole.get()));
+        newUser.setRoles(Set.of(userRole));
 
         userRepository.save(newUser);
         return ResponseEntity.ok(Map.of(
                 "message", "User registered successfully!",
                 "username", newUser.getUsername(),
-                "role", role
+                "role", "ROLE_USER"
         ));
-    }
-}
+    }}
 
 
 

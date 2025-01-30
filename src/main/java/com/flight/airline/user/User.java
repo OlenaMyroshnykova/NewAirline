@@ -32,6 +32,10 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @Column(name = "avatar_url")
+    @JsonIgnore
+    private String avatarUrl = "/uploads/avatars/default.png";
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
@@ -65,6 +69,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getAvatarUrl() {
+         return avatarUrl; 
+    }
+
+    public void setAvatarUrl(String avatarUrl) { 
+        this.avatarUrl = avatarUrl; 
     }
 }
 

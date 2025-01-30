@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.flight.airline.flight.Flight;
 import com.flight.airline.user.User;
@@ -29,6 +30,7 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false, foreignKey = @ForeignKey(name = "FK_flight_booking", value = ConstraintMode.CONSTRAINT, foreignKeyDefinition = "FOREIGN KEY (flight_id) REFERENCES flights(id) ON DELETE CASCADE"))
+    @JsonIgnoreProperties({"bookings"})
     private Flight flight;
 
     private LocalDateTime bookingTime;

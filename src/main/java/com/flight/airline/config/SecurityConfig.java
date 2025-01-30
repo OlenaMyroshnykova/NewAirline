@@ -19,20 +19,19 @@ public class SecurityConfig {
                 .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED) // Создаёт сессию, если нужно
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/flights/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/users/**").hasAuthority("ROLE_USER")
+                .requestMatchers("/api/auth/register").permitAll()
                 .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults())
-            .formLogin(Customizer.withDefaults())
-            .logout(logout -> logout
-                .logoutUrl("/logout") 
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
+            .httpBasic(httpBasic -> {})  
+            .formLogin(form -> form.disable())  
+            .rememberMe(rememberMe -> rememberMe.key("superSecretKey")) // 
+            .sessionManagement(session -> session
+                .sessionFixation().migrateSession()  
             );
-
         return http.build();
-    }
+      }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

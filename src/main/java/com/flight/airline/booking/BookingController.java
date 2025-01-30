@@ -1,19 +1,29 @@
 package com.flight.airline.booking;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.flight.airline.user.User;
+import com.flight.airline.user.UserRepository;
+
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class BookingController {
 
     private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
+    private final UserRepository userRepository;
 
-    public BookingController(BookingService bookingService) {
+    public BookingController(BookingService bookingService, BookingRepository bookingRepository, UserRepository userRepository) {
         this.bookingService = bookingService;
+        this.bookingRepository = bookingRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/admin/bookings")
@@ -26,6 +36,24 @@ public class BookingController {
         List<Booking> bookings = bookingService.getBookingsByUsername(username);
         return ResponseEntity.ok(bookings);
     }
+
+    @GetMapping("/users/bookings/my")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getUserBookings(Authentication authentication) {
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Booking> bookings = bookingRepository.findByUser(user);
+
+        if (bookings.isEmpty()) {
+            return ResponseEntity.ok(Map.of("message", "No bookings found"));
+        }
+
+        return ResponseEntity.ok(bookings);
+    }
+
     @PostMapping("/users/{userId}/book/{flightId}")
     public ResponseEntity<Booking> bookFlight(@PathVariable Long userId, @PathVariable Long flightId) {
         return ResponseEntity.ok(bookingService.bookFlight(userId, flightId));
