@@ -41,7 +41,7 @@ public class AuthController {
 
         User newUser = new User();
         newUser.setUsername(username);
-        newUser.setPassword(passwordEncoder.encode(password)); // ✅ Хэшируем пароль
+        newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(Set.of(userRole.get()));
 
         userRepository.save(newUser);
