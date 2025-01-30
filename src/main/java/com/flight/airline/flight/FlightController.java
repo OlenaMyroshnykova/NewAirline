@@ -3,9 +3,7 @@ package com.flight.airline.flight;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-//import java.time.LocalDateTime;
 import java.util.List;
-//import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -42,7 +40,8 @@ public class FlightController {
                 flight.getFlightNumber(),
                 flight.getOriginAirport().getId(),
                 flight.getDestinationAirport().getId(),
-                flight.getDepartureTime()
+                flight.getDepartureTime(),
+                flight.getAvailableSeats()
         ));
     }
 
@@ -53,14 +52,15 @@ public class FlightController {
                 flight.getFlightNumber(),
                 flight.getOriginAirport().getId(),
                 flight.getDestinationAirport().getId(),
-                flight.getDepartureTime()
+                flight.getDepartureTime(),
+                flight.getAvailableSeats()
         ));
     }
 
     @DeleteMapping("/admin/flights/{id}")
-    public ResponseEntity<Void> deleteFlight(@PathVariable Long id) {
-        flightService.deleteFlight(id);
-        return ResponseEntity.noContent().build();
-    }
-}
+    public ResponseEntity<Flight> deleteFlight(@PathVariable Long id) {
+        Flight deletedFlight = flightService.deleteFlight(id);
+        return ResponseEntity.ok(deletedFlight);
+    }}
+
 

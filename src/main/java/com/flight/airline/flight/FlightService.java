@@ -34,7 +34,7 @@ public class FlightService {
     }
 
     @Transactional
-    public Flight createFlight(String flightNumber, Long originAirportId, Long destinationAirportId, LocalDateTime departureTime) {
+    public Flight createFlight(String flightNumber, Long originAirportId, Long destinationAirportId, LocalDateTime departureTime, int availableSeats) {
         Airport originAirport = airportRepository.findById(originAirportId)
                 .orElseThrow(() -> new RuntimeException("Origin airport not found"));
         Airport destinationAirport = airportRepository.findById(destinationAirportId)
@@ -45,12 +45,13 @@ public class FlightService {
         flight.setOriginAirport(originAirport);
         flight.setDestinationAirport(destinationAirport);
         flight.setDepartureTime(departureTime);
+        flight.setAvailableSeats(availableSeats);  // <-- Добавили
 
         return flightRepository.save(flight);
     }
 
     @Transactional
-    public Flight updateFlight(Long id, String flightNumber, Long originAirportId, Long destinationAirportId, LocalDateTime departureTime) {
+    public Flight updateFlight(Long id, String flightNumber, Long originAirportId, Long destinationAirportId, LocalDateTime departureTime, int availableSeats) {
         return flightRepository.findById(id)
             .map(flight -> {
                 Airport originAirport = airportRepository.findById(originAirportId)
@@ -62,6 +63,7 @@ public class FlightService {
                 flight.setOriginAirport(originAirport);
                 flight.setDestinationAirport(destinationAirport);
                 flight.setDepartureTime(departureTime);
+                flight.setAvailableSeats(availableSeats);  // <-- Добавили
 
                 return flightRepository.save(flight);
             })
@@ -69,8 +71,12 @@ public class FlightService {
     }
 
     @Transactional
-    public void deleteFlight(Long id) {
-        flightRepository.deleteById(id);
-    }
-}
+    public Flight deleteFlight(Long id) {
+        Flight flight = flightRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Flight not found"));
+        
+        flightRepository.delete(flight);
+        return flight;
+    }}
+
 

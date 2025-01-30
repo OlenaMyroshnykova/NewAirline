@@ -49,11 +49,12 @@ public class AirportService {
     }
 
     @Transactional
-    public void deleteAirport(Long id) {
-        if (!airportRepository.existsById(id)) {
-            throw new RuntimeException("Airport not found with id " + id);
-        }
-        airportRepository.deleteById(id);
-    }
+    public Airport deleteAirport(Long id) {
+        Airport airport = airportRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Airport not found"));
+    
+        airportRepository.delete(airport); 
+        return airport; 
+    }    
 }
 

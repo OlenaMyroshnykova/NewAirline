@@ -1,25 +1,25 @@
-package com.flight.airline;
+package com.flight.airline.user;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.flight.airline.role.Role;
 import com.flight.airline.role.RoleRepository;
-import com.flight.airline.user.User;
-import com.flight.airline.user.UserRepository;
 
 import java.util.Set;
 
 @Component
-public class DataLoader implements CommandLineRunner {
+@Order(1)
+public class UserDataLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     
 
-    public DataLoader(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserDataLoader(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;

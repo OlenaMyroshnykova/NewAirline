@@ -81,13 +81,11 @@ public class BookingService {
         return bookingRepository.findByUserId(userId);
     }
 
-    // 📌 Получить бронирования пользователя с фильтрацией по статусу
     public List<Booking> getUserBookingsByStatus(Long userId, BookingStatus status) {
         return bookingRepository.findByUserIdAndStatus(userId, status);
     }
 
-    // 📌 Админ может изменить статус бронирования (CONFIRMED или CANCELLED)
-    @Transactional
+        @Transactional
     public void updateBookingStatus(Long bookingId, BookingStatus newStatus) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -105,6 +103,12 @@ public class BookingService {
         for (Booking booking : expiredBookings) {
             cancelBooking(booking.getId());
         }
+    }
+
+    public List<Booking> getBookingsByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return bookingRepository.findByUser(user);
     }
 }
 

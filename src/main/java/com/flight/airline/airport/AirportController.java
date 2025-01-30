@@ -38,8 +38,8 @@ public class AirportController {
     }
 
     @DeleteMapping("/admin/airports/{id}")
-    public ResponseEntity<Void> deleteAirport(@PathVariable Long id) {
-        airportService.deleteAirport(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Airport> deleteAirport(@PathVariable Long id) {
+        Airport deletedAirport = airportService.deleteAirport(id);
+        return ResponseEntity.ok(deletedAirport);
     }
 }
