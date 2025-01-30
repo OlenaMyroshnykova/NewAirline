@@ -15,10 +15,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .sessionManagement(session -> session
-                .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED) // Создаёт сессию, если нужно
+                .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED) 
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/auth/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
             )
