@@ -18,7 +18,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED) // Создаёт сессию, если нужно
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
             )

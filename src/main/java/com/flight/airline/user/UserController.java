@@ -17,14 +17,12 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    // Получение всех пользователей (только для админов)
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Получение пользователя по ID
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
@@ -32,7 +30,6 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Удаление пользователя (только админ)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

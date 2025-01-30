@@ -32,5 +32,9 @@ public class Booking {
     private Flight flight;
 
     private LocalDateTime bookingTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BookingStatus status;
 }
 

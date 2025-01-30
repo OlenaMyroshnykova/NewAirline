@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import com.flight.airline.airport.Airport;
+
 @Entity
 @Getter
 @Setter
@@ -21,20 +23,26 @@ public class Flight {
     @Column(unique = true, nullable = false)
     private String flightNumber;
 
-    @Column(nullable = false)
-    private String origin;
+    @ManyToOne
+    @JoinColumn(name = "origin_airport_id", nullable = false)
+    private Airport originAirport;
 
-    @Column(nullable = false)
-    private String destination;
+    @ManyToOne
+    @JoinColumn(name = "destination_airport_id", nullable = false)
+    private Airport destinationAirport;
 
     @Column(nullable = false)
     private LocalDateTime departureTime;
 
-    public Flight(String flightNumber, String origin, String destination, LocalDateTime departureTime) {
+    @Column(nullable = false)
+    private int availableSeats;
+
+    public Flight(String flightNumber, Airport originAirport, Airport destinationAirport, LocalDateTime departureTime, int availableSeats) {
         this.flightNumber = flightNumber;
-        this.origin = origin;
-        this.destination = destination;
+        this.originAirport = originAirport;
+        this.destinationAirport = destinationAirport;
         this.departureTime = departureTime;
+        this.availableSeats = availableSeats;
     }
 }
 
