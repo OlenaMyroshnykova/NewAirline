@@ -14,11 +14,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session
                 .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED) // Создаёт сессию, если нужно
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/api/flights/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
             )

@@ -1,78 +1,63 @@
 package com.flight.airline.booking;
 
-//mport org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.flight.airline.exception.BookingAlreadyExistsException;
-import com.flight.airline.exception.FlightNotFoundException;
-import com.flight.airline.exception.UserNotFoundException;
-import com.flight.airline.flight.Flight;
-import com.flight.airline.flight.FlightRepository;
-import com.flight.airline.user.User;
-import com.flight.airline.user.UserRepository;
-
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-//import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("/api")
 public class BookingController {
 
-    private final BookingRepository bookingRepository;
-    private final UserRepository userRepository;
-    private final FlightRepository flightRepository;
+    private final BookingService bookingService;
 
-    public BookingController(BookingRepository bookingRepository, UserRepository userRepository, FlightRepository flightRepository) {
-        this.bookingRepository = bookingRepository;
-        this.userRepository = userRepository;
-        this.flightRepository = flightRepository;
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
     }
 
-    @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_USER') or hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<List<Booking>> getUserBookings(Authentication auth) {
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    @GetMapping("/admin/bookings")
+    public ResponseEntity<List<Booking>> getAllBookings() {
+        return ResponseEntity.ok(bookingService.getAllBookings());
+    }
 
-        List<Booking> bookings = bookingRepository.findByUserId(user.getId());
+    @GetMapping("/admin/bookings/history/{username}")
+    public ResponseEntity<List<Booking>> getUserBookingHistory(@PathVariable String username) {
+        List<Booking> bookings = bookingService.getBookingsByUsername(username);
         return ResponseEntity.ok(bookings);
     }
+    @PostMapping("/users/{userId}/book/{flightId}")
+    public ResponseEntity<Booking> bookFlight(@PathVariable Long userId, @PathVariable Long flightId) {
+        return ResponseEntity.ok(bookingService.bookFlight(userId, flightId));
+    }
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<Map<String, Object>> createBooking(Authentication auth, @RequestParam String flightNumber) {
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    @PutMapping("/admin/bookings/{bookingId}/confirm")
+    public ResponseEntity<Void> confirmBooking(@PathVariable Long bookingId) {
+        bookingService.confirmBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
 
-        Flight flight = flightRepository.findByFlightNumber(flightNumber)
-                .orElseThrow(() -> new FlightNotFoundException("Flight not found: " + flightNumber));
+    @DeleteMapping("/admin/bookings/{bookingId}/cancel")
+    public ResponseEntity<Void> cancelBooking(@PathVariable Long bookingId) {
+        bookingService.cancelBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
 
-        // Проверяем, не бронировал ли этот пользователь уже этот рейс
-        boolean alreadyBooked = bookingRepository.findByUserId(user.getId())
-                .stream().anyMatch(booking -> booking.getFlight().getId().equals(flight.getId()));
+    @GetMapping("/users/{userId}/bookings")
+    public ResponseEntity<List<Booking>> getUserBookings(@PathVariable Long userId) {
+        return ResponseEntity.ok(bookingService.getUserBookings(userId));
+    }
 
-        if (alreadyBooked) {
-            throw new BookingAlreadyExistsException("You have already booked this flight: " + flightNumber);
-        }
+    @GetMapping("/users/{userId}/bookings/status/{status}")
+    public ResponseEntity<List<Booking>> getUserBookingsByStatus(@PathVariable Long userId, @PathVariable BookingStatus status) {
+        return ResponseEntity.ok(bookingService.getUserBookingsByStatus(userId, status));
+    }
 
-        Booking booking = new Booking();
-        booking.setUser(user);
-        booking.setFlight(flight);
-        booking.setBookingTime(LocalDateTime.now());
-        bookingRepository.save(booking);
-
-        return ResponseEntity.ok(Map.of(
-                "message", "Booking created successfully!",
-                "flightNumber", flightNumber,
-                "user", username
-        ));
+    @PutMapping("/admin/bookings/{bookingId}/status/{status}")
+    public ResponseEntity<Void> updateBookingStatus(@PathVariable Long bookingId, @PathVariable BookingStatus status) {
+        bookingService.updateBookingStatus(bookingId, status);
+        return ResponseEntity.noContent().build();
     }
 }
+
 
