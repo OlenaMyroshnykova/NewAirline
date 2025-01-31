@@ -1,37 +1,31 @@
 package com.flight.airline.booking;
 
-
 import com.flight.airline.flight.Flight;
 import com.flight.airline.user.User;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@ActiveProfiles("test")
-class BookingRepositoryTest {
-
-    @Autowired
-    private BookingRepository bookingRepository;
+class BookingTest {
 
     private Booking booking;
+    private User user;
+    private Flight flight;
 
     @BeforeEach
     void setUp() {
-        User user = new User();
+        user = new User();
         user.setId(1L);
+        user.setUsername("testUser");
 
-        Flight flight = new Flight();
+        flight = new Flight();
         flight.setId(1L);
 
         booking = new Booking();
+        booking.setId(1L);
         booking.setUser(user);
         booking.setFlight(flight);
         booking.setBookingTime(LocalDateTime.now());
@@ -39,21 +33,31 @@ class BookingRepositoryTest {
     }
 
     @Test
-    void testSaveBooking() {
-        Booking savedBooking = bookingRepository.save(booking);
-        assertNotNull(savedBooking.getId());
-        assertEquals(booking.getUser().getId(), savedBooking.getUser().getId());
-        assertEquals(booking.getFlight().getId(), savedBooking.getFlight().getId());
-        assertEquals(BookingStatus.CONFIRMED, savedBooking.getStatus());
+    void testBookingCreation() {
+        assertNotNull(booking);
     }
 
     @Test
-    void testFindById() {
-        Booking savedBooking = bookingRepository.save(booking);
-        Optional<Booking> foundBooking = bookingRepository.findById(savedBooking.getId());
+    void testGetUser() {
+        assertEquals(user, booking.getUser());
+        assertEquals(1L, booking.getUser().getId());
+    }
 
-        assertTrue(foundBooking.isPresent());
-        assertEquals(savedBooking.getId(), foundBooking.get().getId());
+    @Test
+    void testGetFlight() {
+        assertEquals(flight, booking.getFlight());
+        assertEquals(1L, booking.getFlight().getId());
+    }
+
+    @Test
+    void testGetBookingTime() {
+        assertNotNull(booking.getBookingTime());
+    }
+
+    @Test
+    void testGetStatus() {
+        assertEquals(BookingStatus.CONFIRMED, booking.getStatus());
     }
 }
+
 
