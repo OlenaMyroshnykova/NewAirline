@@ -53,7 +53,7 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
     @Transactional
-    public void confirmBooking(Long bookingId) {
+    public Booking confirmBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
@@ -61,10 +61,11 @@ public class BookingService {
             booking.setStatus(BookingStatus.CONFIRMED);
             bookingRepository.save(booking);
         }
+        return booking;
     }
 
     @Transactional
-    public void cancelBooking(Long bookingId) {
+    public Booking cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
     
@@ -75,6 +76,7 @@ public class BookingService {
     
         bookingRepository.delete(booking);
         flightRepository.save(flight);
+        return booking;
     }
     
     public List<Booking> getUserBookings(Long userId) {

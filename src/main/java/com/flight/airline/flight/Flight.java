@@ -11,7 +11,6 @@ import java.util.List;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.flight.airline.airport.Airport;
 import com.flight.airline.booking.Booking;
 

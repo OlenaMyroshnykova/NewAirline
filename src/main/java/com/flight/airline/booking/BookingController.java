@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import com.flight.airline.user.User;
 import com.flight.airline.user.UserRepository;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -62,15 +61,15 @@ public class BookingController {
     }
 
     @PutMapping("/admin/bookings/{bookingId}/confirm")
-    public ResponseEntity<Void> confirmBooking(@PathVariable Long bookingId) {
-        bookingService.confirmBooking(bookingId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Booking> confirmBooking(@PathVariable Long bookingId) {
+        Booking booking = bookingService.confirmBooking(bookingId);
+        return ResponseEntity.ok(booking);
     }
 
     @DeleteMapping("/admin/bookings/{bookingId}/cancel")
-    public ResponseEntity<Void> cancelBooking(@PathVariable Long bookingId) {
-        bookingService.cancelBooking(bookingId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Booking> cancelBooking(@PathVariable Long bookingId) {
+        Booking booking = bookingService.cancelBooking(bookingId);
+        return ResponseEntity.ok(booking);
     }
 
     @GetMapping("/users/{userId}/bookings")
