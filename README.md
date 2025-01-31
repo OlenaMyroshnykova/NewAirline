@@ -11,14 +11,13 @@ This project is a REST API for managing an airline. It allows administration of 
 - **Hibernate** 🏗️
 - **MySQL in Docker** 🐬
 - **HikariCP** 🚀
-- **JWT for authentication** 🔑
 - **JUnit & Mockito for testing** ✅
 - **GitHub Actions for CI/CD** 🤖
 
 ## 🚀 Installation & Execution
 ### 📥 1. Clone the Repository
 ```bash
-git clone https://github.com/OlenaMyroshnykova/airline.git
+git clone https://github.com/OlenaMyroshnykova/newairline.git
 cd airline
 ```
 
@@ -38,9 +37,6 @@ java -jar target/airline.jar
 ```
 
 ## 📡 API Endpoints
-### 🛂 Authentication
-- `POST /auth/login` → Returns a JWT token for authentication.
-
 ### 🛫 Flights
 - `GET /flights` → List available flights.
 - `POST /flights` → Create a new flight (*Admin*).
@@ -102,11 +98,6 @@ classDiagram
     Booking <|-- BookingService
 ```
 
-## 📄 License
-This project is licensed under the **MIT License**.
 
----
-
-This `README.md` provides a clear overview of the project with **installation steps**, **API details**, and **architecture**. Let me know if you want any modifications! 😊
 
 
