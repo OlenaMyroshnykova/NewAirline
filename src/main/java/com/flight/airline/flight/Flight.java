@@ -52,17 +52,22 @@ public class Flight {
     private List<Booking> bookings;
 
 
-    public Flight(String flightNumber, Airport originAirport, Airport destinationAirport, LocalDateTime departureTime, int availableSeats) {
+    public Flight(String flightNumber, Airport originAirport, Airport destinationAirport, LocalDateTime departureTime, int availableSeats, boolean available) {
         this.flightNumber = flightNumber;
         this.originAirport = originAirport;
         this.destinationAirport = destinationAirport;
         this.departureTime = departureTime;
         this.availableSeats = availableSeats;
+        this.available = available;
     }
 
     public void updateAvailability() {
         this.available = availableSeats > 0 && departureTime.isAfter(LocalDateTime.now());
     }
+    
+    public boolean getAvailable() {
+        return available; 
+   }
 }
 
 

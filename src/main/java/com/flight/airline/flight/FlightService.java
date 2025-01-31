@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.flight.airline.airport.Airport;
 import com.flight.airline.airport.AirportRepository;
+import com.flight.airline.booking.BookingRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,10 +17,12 @@ public class FlightService {
 
     private final FlightRepository flightRepository;
     private final AirportRepository airportRepository;
+    private final BookingRepository bookingRepository;
 
-    public FlightService(FlightRepository flightRepository, AirportRepository airportRepository) {
+    public FlightService(FlightRepository flightRepository, AirportRepository airportRepository, BookingRepository bookingRepository) {
         this.flightRepository = flightRepository;
         this.airportRepository = airportRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     public List<Flight> getAllFlights() {
@@ -80,21 +83,24 @@ public class FlightService {
         return flight;
     }
 
+    @Scheduled(fixedRate = 60000) // Запуск каждые 60 секунд (1 минута)
     @Transactional
-    public void checkAndUpdateFlightsAvailability() {
+    public void updateFlightAvailability() {
         List<Flight> flights = flightRepository.findAll();
-        flights.forEach(flight -> {
-            boolean previousAvailability = flight.isAvailable();
-            flight.updateAvailability();
-            if (flight.isAvailable() != previousAvailability) {
-                flightRepository.save(flight);
-            }
-        });
-    }
 
-    @Scheduled(fixedRate = 300000)
-    public void scheduledAvailabilityCheck() {
-        checkAndUpdateFlightsAvailability();
+        for (Flight flight : flights) {
+            int bookedSeats = bookingRepository.countByFlightId(flight.getId());
+            int availableSeats = flight.getAvailableSeats() - bookedSeats; // Вычисляем свободные места
+
+            boolean isFlightExpired = flight.getDepartureTime().isBefore(LocalDateTime.now()); // Проверяем, истекло ли время
+            boolean isAvailable = availableSeats > 0 && !isFlightExpired;
+            
+            flight.setAvailable(isAvailable);
+            //flight.setAvailableSeats(Math.max(availableSeats, 0)); // Чтобы не уходило в минус
+
+            flightRepository.save(flight);
+        }
+
     }
 }
 

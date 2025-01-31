@@ -30,14 +30,14 @@ public class BookingService {
     }
 
     @Transactional
-    public Booking bookFlight(Long userId, Long flightId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public Booking bookFlight(String userName, Long flightId) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (flight.getAvailableSeats() <= 0) {
-            throw new RuntimeException("No available seats for this flight");
+        if (flight.getAvailable() == false) {
+            throw new RuntimeException("No available seats");
         }
 
         Booking booking = new Booking();
@@ -47,10 +47,11 @@ public class BookingService {
         booking.setStatus(BookingStatus.PENDING);
 
         flight.setAvailableSeats(flight.getAvailableSeats() - 1);
+        flight.updateAvailability();
+
         flightRepository.save(flight);
         return bookingRepository.save(booking);
     }
-
     @Transactional
     public void confirmBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
@@ -66,17 +67,16 @@ public class BookingService {
     public void cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-
-        if (booking.getStatus() == BookingStatus.PENDING) {
-            Flight flight = booking.getFlight();
-            flight.setAvailableSeats(flight.getAvailableSeats() + 1);
-            flightRepository.save(flight);
-
-            booking.setStatus(BookingStatus.CANCELLED);
-            bookingRepository.save(booking);
-        }
+    
+        Flight flight = booking.getFlight();
+    
+        flight.setAvailableSeats(flight.getAvailableSeats() + 1);
+        flight.updateAvailability();
+    
+        bookingRepository.delete(booking);
+        flightRepository.save(flight);
     }
-
+    
     public List<Booking> getUserBookings(Long userId) {
         return bookingRepository.findByUserId(userId);
     }

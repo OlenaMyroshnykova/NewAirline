@@ -54,9 +54,11 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    @PostMapping("/users/{userId}/book/{flightId}")
-    public ResponseEntity<Booking> bookFlight(@PathVariable Long userId, @PathVariable Long flightId) {
-        return ResponseEntity.ok(bookingService.bookFlight(userId, flightId));
+    @PostMapping("/users/book/{flightId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Booking> bookFlight(Authentication authentication, @PathVariable Long flightId) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(bookingService.bookFlight(username, flightId));
     }
 
     @PutMapping("/admin/bookings/{bookingId}/confirm")
