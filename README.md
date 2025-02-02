@@ -36,17 +36,35 @@ mvn clean package
 java -jar target/airline.jar
 ```
 
-## 📡 API Endpoints
-### 🛫 Flights
-- `GET /flights` → List available flights.
-- `POST /flights` → Create a new flight (*Admin*).
-- `PUT /flights/{id}` → Edit a flight (*Admin*).
-- `DELETE /flights/{id}` → Delete a flight (*Admin*).
+## API Endpoints
+### Authentication
+- `POST /api/auth/register` - Register a new user
 
-### 🎫 Bookings
-- `POST /bookings` → Create a booking.
-- `GET /bookings` → List user bookings.
-- `DELETE /bookings/{id}` → Cancel a booking.
+### User Management
+- `GET /api/user/profile` - Get current user's profile
+- `POST /api/user/upload-avatar` - Upload user avatar
+
+### Airport Management
+- `GET /api/airports` - Get all airports
+- `GET /api/airports/{id}` - Get airport by ID
+- `POST /api/admin/airports` - Create an airport
+- `PUT /api/admin/airports/{id}` - Update an airport
+- `DELETE /api/admin/airports/{id}` - Delete an airport
+
+### Flight Management
+- `GET /api/flights` - Get all flights
+- `GET /api/flights/{id}` - Get flight by ID
+- `GET /api/flights/search?originAirportId={id}&destinationAirportId={id}` - Search flights
+- `POST /api/admin/flights` - Create a flight
+- `PUT /api/admin/flights/{id}` - Update a flight
+- `DELETE /api/admin/flights/{id}` - Delete a flight
+
+### Booking Management
+- `GET /api/bookings` - Get all bookings
+- `POST /api/bookings` - Create a new booking
+- `PUT /api/bookings/{id}/confirm` - Confirm a booking
+- `PUT /api/bookings/{id}/cancel` - Cancel a booking
+
 
 ## 🛠️ Class Diagram
 ```mermaid
