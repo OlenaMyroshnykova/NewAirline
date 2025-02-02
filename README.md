@@ -1,7 +1,7 @@
 # ✈️ Airline Factoría F5
 
 ## 📌 Project Description
-This project is a REST API for managing an airline. It allows administration of flights, bookings, users, and authentication via JWT.
+NewAirline is a Spring Boot-based airline management system that provides functionality for managing flights, bookings, users, and authentication. The system follows SOLID principles, uses Java 21, and integrates with MySQL in Docker.
 
 ## 🛠️ Technologies Used
 - **Java 21** ☕
@@ -12,7 +12,6 @@ This project is a REST API for managing an airline. It allows administration of 
 - **MySQL in Docker** 🐬
 - **HikariCP** 🚀
 - **JUnit & Mockito for testing** ✅
-- **GitHub Actions for CI/CD** 🤖
 
 ## 🚀 Installation & Execution
 ### 📥 1. Clone the Repository
