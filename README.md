@@ -116,6 +116,19 @@ classDiagram
     Booking <|-- BookingService
 ```
 
+### Database diagram.
+
+<img src="./uploads/Diagrama1.png" title="coverage report" alt="coverage report"/>
+
+### Unit tests to verify functionality across different system components.
+
+<img src="./uploads/tests.png" title="coverage report" alt="coverage report"/>
+
+### Author
+Olena Myroshnykova
+
+
+
 
 
 
