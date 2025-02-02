@@ -24,13 +24,6 @@ class AdminControllerTest {
                 .andExpect(content().string("Welcome, Admin!"));
     }
 
-    // @Test
-    // @WithMockUser(username = "user", roles = {"USER"})
-    // void adminAccess_WithUserRole_ShouldReturnForbidden() throws Exception {
-    //     mockMvc.perform(get("/api/admin"))
-    //             .andExpect(status().isForbidden());
-    // }
-
     @Test
     void adminAccess_WithoutAuthentication_ShouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/api/admin"))

@@ -90,11 +90,11 @@ class BookingServiceTest {
 
     @Test
     void testBookFlight_NoSeatsAvailable() {
-        // Arrange
+        
         Flight flight = new Flight();
         flight.setId(1L);
-        flight.setAvailableSeats(0);  // Нет доступных мест
-        flight.updateAvailability(); // Убедимся, что доступность обновляется
+        flight.setAvailableSeats(0);
+        flight.updateAvailability();
 
         User user = new User();
         user.setId(1L);
@@ -103,7 +103,6 @@ class BookingServiceTest {
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
         when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
 
-        // Act & Assert
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             bookingService.bookFlight("testUser", 1L);
         });
