@@ -4,15 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.flight.airline.airport.Airport;
 import com.flight.airline.booking.Booking;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -50,7 +49,6 @@ public class Flight {
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings;
 
-
     public Flight(String flightNumber, Airport originAirport, Airport destinationAirport, LocalDateTime departureTime, int availableSeats, boolean available) {
         this.flightNumber = flightNumber;
         this.originAirport = originAirport;
@@ -61,12 +59,29 @@ public class Flight {
     }
 
     public void updateAvailability() {
+        if (departureTime == null) {
+            this.available = false;
+            return;
+        }
         this.available = availableSeats > 0 && departureTime.isAfter(LocalDateTime.now());
     }
-    
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
+        updateAvailability();
+    }
+
+    public void setOriginAirport(Airport originAirport) {
+        this.originAirport = originAirport;
+    }
+
+    public void setDestinationAirport(Airport destinationAirport) {
+        this.destinationAirport = destinationAirport;
+    }
+
     public boolean getAvailable() {
         return available; 
-   }
+    }
 }
+
 
 
