@@ -1,30 +1,39 @@
 package com.flight.airline.user;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.flight.airline.file.FileStorageService;
+
+import org.springframework.security.core.Authentication;
+
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserRepository userRepository;
+    private final FileStorageService fileStorageService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, FileStorageService fileStorageService) {
         this.userRepository = userRepository;
+        this.fileStorageService = fileStorageService;
     }
 
-    // Получение всех пользователей (только для админов)
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Получение пользователя по ID
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
@@ -32,7 +41,6 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Удаление пользователя (только админ)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
