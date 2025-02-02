@@ -1,7 +1,7 @@
 package com.flight.airline.airport;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -36,68 +37,69 @@ class AirportControllerTest {
     }
 
     @Test
-    void testGetAllAirports() {
+    void getAllAirports_ReturnsListOfAirports() {
         when(airportService.getAllAirports()).thenReturn(List.of(testAirport));
 
         ResponseEntity<List<Airport>> response = airportController.getAllAirports();
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().size());
-        verify(airportService, times(1)).getAllAirports();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull().hasSize(1);
+        verify(airportService).getAllAirports();
     }
 
     @Test
-    void testGetAirportById_Found() {
+    void getAirportById_WhenExists_ReturnsAirport() {
         when(airportService.getAirportById(1L)).thenReturn(Optional.of(testAirport));
 
         ResponseEntity<Airport> response = airportController.getAirportById(1L);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(testAirport.getId(), response.getBody().getId());
-        verify(airportService, times(1)).getAirportById(1L);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull().extracting(Airport::getId).isEqualTo(1L);
+        verify(airportService).getAirportById(1L);
     }
 
     @Test
-    void testGetAirportById_NotFound() {
+    void getAirportById_WhenNotExists_ReturnsNotFound() {
         when(airportService.getAirportById(2L)).thenReturn(Optional.empty());
 
         ResponseEntity<Airport> response = airportController.getAirportById(2L);
 
-        assertEquals(404, response.getStatusCodeValue());
-        verify(airportService, times(1)).getAirportById(2L);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        verify(airportService).getAirportById(2L);
     }
 
     @Test
-    void testCreateAirport() {
+    void createAirport_SuccessfullyCreatesAirport() {
         when(airportService.createAirport(any(Airport.class))).thenReturn(testAirport);
 
         ResponseEntity<Airport> response = airportController.createAirport(testAirport);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(testAirport.getId(), response.getBody().getId());
-        verify(airportService, times(1)).createAirport(any(Airport.class));
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull().extracting(Airport::getId).isEqualTo(1L);
+        verify(airportService).createAirport(any(Airport.class));
     }
 
     @Test
-    void testUpdateAirport() {
+    void updateAirport_SuccessfullyUpdatesAirport() {
         when(airportService.updateAirport(eq(1L), any(Airport.class))).thenReturn(testAirport);
 
         ResponseEntity<Airport> response = airportController.updateAirport(1L, testAirport);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(testAirport.getId(), response.getBody().getId());
-        verify(airportService, times(1)).updateAirport(eq(1L), any(Airport.class));
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull().extracting(Airport::getId).isEqualTo(1L);
+        verify(airportService).updateAirport(eq(1L), any(Airport.class));
     }
 
     @Test
-    void testDeleteAirport() {
+    void deleteAirport_SuccessfullyDeletesAirport() {
         when(airportService.deleteAirport(1L)).thenReturn(testAirport);
 
         ResponseEntity<Airport> response = airportController.deleteAirport(1L);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(testAirport.getId(), response.getBody().getId());
-        verify(airportService, times(1)).deleteAirport(1L);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull().extracting(Airport::getId).isEqualTo(1L);
+        verify(airportService).deleteAirport(1L);
     }
 }
+
 
